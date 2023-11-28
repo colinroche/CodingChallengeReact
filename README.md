@@ -4,5 +4,8 @@ React frontend that communicates with a NodeJS backend running Express. It is a 
 ## Setting up application
 npx create-react-app frontend
 
+## Frontend installs
+npm i react-router-dom
+
 ## Start frontend server
 npm start

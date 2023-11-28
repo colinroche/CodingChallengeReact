@@ -1,7 +1,7 @@
 export default function Header() {
     return (
         <nav className="nav-bar">
-            <p><a herf="/">Home</a></p>
+            <p><a href="/">Home</a></p>
         </nav>
     )
 }

@@ -45,11 +45,23 @@
   color: #ffffff
 }
 
+.nav-bar a {
+  text-decoration: none;
+  color: white;
+}
+
+.nav-bar a:hover {
+  text-decoration: underline;
+  color: #61dafb;
+}
+
 .footer {
   display: flex;
   padding: 40px;
+  justify-content: center;
   font-size: 14px;
-  color: #000000
+  color: #8b8b8b;
+  text-align: center;
 }
 
 .black {
