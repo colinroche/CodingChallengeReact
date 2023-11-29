@@ -6,6 +6,7 @@ npx create-react-app frontend
 
 ## Frontend installs
 npm i react-router-dom
+npm i axios
 
 ## Start frontend server
 npm start
