@@ -73,7 +73,7 @@
   margin: 0 auto;
   margin-top: 80px;
   display: block;
-  width: 400px;
+  width: 500px;
   background-color: #ffffff;
   padding: 40px;
   border-radius: 20px;
@@ -82,14 +82,14 @@
 
 .countryForm label {
   display: block;
-  width: 380px;
+  width: 480px;
   padding: 5px;
   margin-top: 30px;
 }
 
 .countryForm input {
   display: block;
-  width: 380px;
+  width: 480px;
   padding: 10px;
   border-radius: 10px;
   border: 1px solid gray;

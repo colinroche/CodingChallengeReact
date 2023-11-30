@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import axios from "axios"
 
 export default function Home() {
@@ -14,13 +14,29 @@ export default function Home() {
             // GET request to the backend server
             await axios.get(`http://localhost:4000/country/${name}`)
             .then(res => {
-                setSelectData(res.data)  
-
+                // filter the retrieved countries by exact name
+                const matches = res.data.filter(
+                    (e) => e.name.common.toLowerCase() === name.toLowerCase()
+                )
+                
+                // name matches exactly
+                if (matches.length === 1) {
+                    setSelectData(matches[0])
+                    setError('')
+                }
+                // name does not match exactly
+                else if (matches.length < 1) {
+                    setSelectData(null)
+                    setError(<p className="required">Please be more specific. Multiple countries found</p>)
+                }
+                else {
+                    setSelectData(null)
+                    setError(<p class="required">Country information not found</p>)
+                }
             })
-            setError('')
         } catch (err) {
             setSelectData(null)
-            setError('Country information not found')
+            setError(<p class="required">Country information not found</p>)
         }
     }
 
@@ -32,16 +48,16 @@ export default function Home() {
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
 
                 <button type="submit">Submit</button>
-            </form>
 
-            {error && <p>{error}</p>}
+                {error && <p>{error}</p>}
 
-            {/* Outputting found data on inputted country */}
-            {selectData && (
-                <div>
-                    <h2>{selectData.name.common}</h2>
-                </div>
-            )}
+                {/* Outputting found data on inputted country */}
+                {selectData && (
+                    <div>
+                        <h2>Country Name: {selectData.name.common}</h2>
+                    </div>
+                )}
+            </form> 
         </div>    
     )
 }
