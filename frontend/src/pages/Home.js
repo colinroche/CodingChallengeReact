@@ -22,7 +22,7 @@ export default function Home() {
 
     // GET request to pull in API directly for testing
     const axiosFetchData = async (processing) => {
-        await axios.get('https://restcountries.com/v3.1/all')
+        await axios.get('http://localhost:4000')
         .then(res => {
             if (processing) {
                 setSelectData(res.data)    
