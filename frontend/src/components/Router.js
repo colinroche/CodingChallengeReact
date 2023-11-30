@@ -1,7 +1,6 @@
 import Header from './Header'
 import Footer from './Footer'
 import Home from '../pages/Home'
-import Countries from '../pages/Countries'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 
 export default function Router() {
@@ -23,14 +22,6 @@ export default function Router() {
                 {
                     path: "/",
                     element: <Home />
-                },
-                {
-                    path: 'countries',
-                    element: <Countries />
-                },
-                {
-                    path: 'countries/:id',
-                    element: <Countries />
                 }
             ]
         }
