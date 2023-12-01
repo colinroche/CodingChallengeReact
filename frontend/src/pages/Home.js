@@ -27,17 +27,60 @@ export default function Home() {
                 // name does not match exactly
                 else if (matches.length < 1) {
                     setSelectData(null)
-                    setError(<p className="required">Please be more specific. Multiple countries found</p>)
+                    setError('Please be more specific. Multiple countries found')
                 }
                 else {
                     setSelectData(null)
-                    setError(<p class="required">Country information not found</p>)
+                    setError('Country information not found')
                 }
             })
         } catch (err) {
             setSelectData(null)
-            setError(<p class="required">Country information not found</p>)
+            setError('Country information not found')
         }
+    }
+
+    const checkIndependents = (independent) => {
+        if (independent === true) {
+            return('Independent')
+        } 
+        else {
+            return('Not independent')
+        }
+    }
+
+    // function used when specified data from api has multiple varying outputs
+    const renderMultiple = (data, isCurrency = false) => {
+        return (
+            <div>
+                {/* Display multiple currencies if available */}
+                {typeof data === 'object' ? (
+                    Object.keys(data).map((code) => (
+                        <li key={code}>
+                            {/* Checks if the output is for currency as it has multiple output*/}
+                            {isCurrency ? (
+                                currencyOutput(data, code)
+                            ) : (
+                                // if not currency print output
+                                data[code]
+                            )}
+                        </li>
+                    ))
+                ) : (
+                    // Converting into a JSON variable before rendering if it is not an object
+                    <li>{JSON.stringify(data)}</li>
+                )}
+            </div>
+        )
+    }
+
+    const currencyOutput = (data, code) => {
+        return (
+            <div>
+                <strong>Name:</strong> {data[code].name}<br />
+                <strong>Symbol:</strong> {data[code].symbol}
+            </div>
+        )
     }
 
     return (
@@ -47,14 +90,21 @@ export default function Home() {
                 {/* saving the inputted variable */}
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
 
-                <button type="submit">Submit</button>
+                <button type="submit">Country Details</button>
 
-                {error && <p>{error}</p>}
+                {error && <p class="required">{error}</p>}
 
                 {/* Outputting found data on inputted country */}
                 {selectData && (
                     <div>
-                        <h2>Country Name: {selectData.name.common}</h2>
+                        <h2>Official Name: <span>{selectData.name.official}</span></h2>
+                        <h2>Common Name: <span>{selectData.name.common}</span></h2>
+                        <h2>Capital: <span>{selectData.capital}</span></h2>
+                        <h2>Region: <span>{selectData.region}</span></h2>
+                        <h2>Status: <span>{checkIndependents(selectData.independent)}</span></h2>
+                        <h2>Flag: <span>{selectData.flag}</span></h2>
+                        <h2>Languages: <span>{renderMultiple(selectData.languages)}</span></h2>
+                        <h2>Currencies: <span>{renderMultiple(selectData.currencies, true)}</span></h2>
                     </div>
                 )}
             </form> 
