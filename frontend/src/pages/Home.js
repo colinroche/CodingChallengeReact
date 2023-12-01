@@ -12,7 +12,7 @@ export default function Home() {
         e.preventDefault() 
         try {
             // GET request to the backend server
-            await axios.get(`http://localhost:4000/country/${name}`)
+            await axios.get(`https://coding-challenge-react-backend.vercel.app/country/${name}`)
             .then(res => {
                 // filter the retrieved countries by exact name
                 const matches = res.data.filter(
