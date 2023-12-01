@@ -102,6 +102,7 @@ export default function Home() {
                         <h2>Common Name: <span>{selectData.name.common}</span></h2>
                         <h2>Capital: <span>{selectData.capital}</span></h2>
                         <h2>Region: <span>{selectData.region}</span></h2>
+                        <h2>Population: <span>{selectData.population}</span></h2>
                         <h2>Status: <span>{checkIndependents(selectData.independent)}</span></h2>
                         <h2>Flag: <span>{selectData.flag}</span></h2>
                         <h2>Languages: <span>{renderMultiple(selectData.languages)}</span></h2>
