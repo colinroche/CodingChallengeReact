@@ -15,8 +15,12 @@ npm init -y
 npm i express cors body-parser
 npm i axios
 
-## Start frontend server
+## Start frontend server - in frontend directory
+npm start 
+
+## Start backend server - in backend directory
 npm start
 
-## Start backend server
-npm start
+## Using the application
+Enter the desired country into the text field present and press the 'Country Details button'.
+Press the Home button at the top of the page to refresh.
