@@ -59,6 +59,7 @@ export default function Home() {
                         <li key={code}>
                             {/* Checks if the output is for currency as it has multiple output*/}
                             {isCurrency ? (
+                                // if different type of nested data, could be check here!
                                 currencyOutput(data, code)
                             ) : (
                                 // if not currency print output

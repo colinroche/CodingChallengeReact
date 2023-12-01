@@ -13,6 +13,7 @@ npm init -y
 
 ## Backend installs
 npm i express cors body-parser
+npm i axios
 
 ## Start frontend server
 npm start
