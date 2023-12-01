@@ -8,6 +8,10 @@ npx create-react-app frontend
 npm i react-router-dom
 npm i axios
 
+## Cypress for testing frontend
+npm install cypress --save-dev
+npx cypress open
+
 ## Setting up backend
 npm init -y
 
