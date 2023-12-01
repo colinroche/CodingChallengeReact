@@ -19,7 +19,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://localhost:4000",
+  "proxy": "https://coding-challenge-react-backend.vercel.app/",
   "eslintConfig": {
     "extends": [
       "react-app",
