@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState , useEffect} from "react"
 import axios from "axios"
 
 export default function Home() {
@@ -6,34 +6,58 @@ export default function Home() {
     // used to save value of fields in form
     const [name, setName] = useState('')
     const [selectData, setSelectData] = useState(null)
+    const [countriesData, setCountriesData] = useState([])
+    const [countriesValue, setCountriesValue] = useState('')
     const [error, setError] = useState('')
+
+    // when application runs, it processes this first
+    useEffect(() => {
+        // ensures that it only runs once at the beginning
+        let processing = true
+        countriesFetchData(processing)
+        return () => {
+            processing = false
+        }
+    }, [])
+
+    // GET request to the backend server for information on all countries
+    const countriesFetchData = async (processing) => {
+        try {
+            const response = await axios.get('https://coding-challenge-react-backend.vercel.app/countries')
+            
+            if (processing) {
+                setCountriesData(response.data)
+            }
+        } catch (error) {
+            setCountriesData([])
+            setError('Country information not found')
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault() 
         try {
-            // GET request to the backend server
-            await axios.get(`https://coding-challenge-react-backend.vercel.app/country/${name}`)
-            .then(res => {
-                // filter the retrieved countries by exact name
-                const matches = res.data.filter(
-                    (e) => e.name.common.toLowerCase() === name.toLowerCase()
-                )
-                
-                // name matches exactly
-                if (matches.length === 1) {
-                    setSelectData(matches[0])
-                    setError('')
-                }
-                // name does not match exactly
-                else if (matches.length < 1) {
-                    setSelectData(null)
-                    setError('Please be more specific. Multiple countries found')
-                }
-                else {
-                    setSelectData(null)
-                    setError('Country information not found')
-                }
-            })
+            // GET request to the backend server for information on specific country
+            const response = await axios.get(`https://coding-challenge-react-backend.vercel.app/countries/${name}`)
+            // filter the retrieved countries by exact name
+            const matches = response.data.filter(
+                (e) => e.name.common.toLowerCase() === name.toLowerCase()
+            )
+            
+            // name matches exactly
+            if (matches.length === 1) {
+                setSelectData(matches[0])
+                setError('')
+            }
+            // name does not match exactly
+            else if (matches.length < 1) {
+                setSelectData(null)
+                setError('Please be more specific. Multiple countries found')
+            }
+            else {
+                setSelectData(null)
+                setError('Country information not found')
+            }
         } catch (err) {
             setSelectData(null)
             setError('Country information not found')
@@ -90,6 +114,14 @@ export default function Home() {
                 <label>Please enter your desired country below:</label>
                 {/* saving the inputted variable */}
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+
+                <select value={countriesValue} onChange={(e) => setCountriesValue(e.target.value)}>
+                    {
+                        countriesData?.map((item) => (
+                            <option value={item.name.common} key={item.name}>{item.name.common}</option>
+                        ))
+                    }
+                </select>
 
                 <button type="submit">Country Details</button>
 
