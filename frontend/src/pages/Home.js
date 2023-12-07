@@ -34,14 +34,32 @@ export default function Home() {
         }
     }
 
+    const handleChange = (e) => {
+        setName(e.target.value)
+        setCountriesValue(e.target.value)
+    }
+
+    const setSelectedCountryInfo = (countryName) => {
+        const country = countriesData.find((item) => item.name.common === countryName)
+
+        if (country) {
+            setSelectData(country)
+            setError('')
+        } else {
+            setSelectData(null)
+            setError('Country information not found')
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault() 
+        setSelectedCountryInfo(name)
         try {
             // GET request to the backend server for information on specific country
             const response = await axios.get(`https://coding-challenge-react-backend.vercel.app/countries/${name}`)
             // filter the retrieved countries by exact name
             const matches = response.data.filter(
-                (e) => e.name.common.toLowerCase() === name.toLowerCase()
+                (country) => country.name.common.toLowerCase() === name.toLowerCase()
             )
             
             // name matches exactly
@@ -113,12 +131,14 @@ export default function Home() {
             <form  className="countryForm" onSubmit={handleSubmit}>
                 <label>Please enter your desired country below:</label>
                 {/* saving the inputted variable */}
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                <input type="text" value={name} onChange={handleChange} />
 
-                <select value={countriesValue} onChange={(e) => setCountriesValue(e.target.value)}>
+                <select value={countriesValue} onChange={handleChange}>
                     {
-                        countriesData?.map((item) => (
-                            <option value={item.name.common} key={item.name}>{item.name.common}</option>
+                        countriesData?.map((country) => (
+                            <option value={country.name.common} key={country.name.common}>
+                                {country.name.common}
+                            </option>
                         ))
                     }
                 </select>
