@@ -7,6 +7,7 @@ npx create-react-app frontend
 ## Frontend installs
 npm i react-router-dom
 npm i axios
+npm i react-select
 
 ## Cypress for testing frontend
 npm install cypress --save-dev

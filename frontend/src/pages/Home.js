@@ -1,5 +1,6 @@
 import { useState , useEffect} from "react"
 import axios from "axios"
+import Select from "react-select"
 
 export default function Home() {
 
@@ -7,79 +8,28 @@ export default function Home() {
     const [name, setName] = useState('')
     const [selectData, setSelectData] = useState(null)
     const [countriesData, setCountriesData] = useState([])
-    const [countriesValue, setCountriesValue] = useState('')
-    const [error, setError] = useState('')
-
     const [filteredCountries, setFilteredCountries] = useState([])
+    const [error, setError] = useState('')
 
     // when application runs, it processes this first
     useEffect(() => {
-        // ensures that it only runs once at the beginning
-        let processing = true
-        countriesFetchData(processing)
-        return () => {
-            processing = false
-        }
-    }, [])
-
-    useEffect(() => {
-        // Set initial filtered countries when component mounts
-        setFilteredCountries(countriesData)
-
-        // Update filtered countries when countriesData changes
-        return () => {
-            setFilteredCountries(countriesData)
-        }
-    }, [countriesData])
-
-    // GET request to the backend server for information on all countries
-    const countriesFetchData = async (processing) => {
-        try {
-            const response = await axios.get('https://coding-challenge-react-backend.vercel.app/countries')
-            
-            if (processing) {
+        const countriesFetchData = async () => {
+            try {
+                const response = await axios.get('https://coding-challenge-react-backend.vercel.app/countries')
                 setCountriesData(response.data)
+                setFilteredCountries(response.data)
+            } catch (error) {
+                setCountriesData([])
+                setFilteredCountries([])
+                setError('Country information not found')
             }
-        } catch (error) {
-            setCountriesData([])
-            setError('Country information not found')
         }
-    }
-
-    const handleChange = (e) => {
-        // capitalizing the first letter inputted
-        const formatValue = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
-        setName(formatValue)
-        setCountriesValue(formatValue)
-    }
-
-    const setSelectedCountryInfo = (countryName) => {
-        const country = countriesData.find((item) => item.name.common === countryName)
-
-        if (country) {
-            setSelectData(country)
-            setError('')
-        } else {
-            setSelectData(null)
-            setError('Country information not found')
-        }
-    }
-
-    const handleInputChange = (e) => {
-        const inputValue = e.target.value.toLowerCase()
-        setName(e.target.value) // Save input value
-
-        // Filter countries based on input
-        const filtered = countriesData.filter((country) =>
-            country.name.common.toLowerCase().includes(inputValue)
-        )
-
-        setFilteredCountries(filtered);// Update filtered countries
-    }
+        countriesFetchData()
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault() 
-        setSelectedCountryInfo(name)
+ 
         try {
             // GET request to the backend server for information on specific country
             const response = await axios.get(`https://coding-challenge-react-backend.vercel.app/countries/${name}`)
@@ -107,6 +57,23 @@ export default function Home() {
             setError('Country information not found')
         }
     }
+    
+    const handleChange = (selectedOption) => {
+        if (selectedOption) {
+            setName(selectedOption.value)
+            const selectedCountry = countriesData.find(country => country.name.common === selectedOption.value)
+            setSelectData(selectedCountry)
+        } else {
+            setName('')
+            setSelectData(null)
+        }
+        
+    }
+
+    const options = filteredCountries.map(country => ({
+        value: country.name.common,
+        label: country.name.common
+    }))
 
     const checkIndependents = (independent) => {
         return independent ? 'Independent' : 'Not independent'
@@ -151,23 +118,12 @@ export default function Home() {
         <div>
             <form  className="countryForm" onSubmit={handleSubmit}>
                 {/* saving the inputted variable */}
-                <input type="text" value={name} placeholder="Please enter your desired country..." onChange={handleInputChange} />
-
-                <div className="filtered-select">
-                    {filteredCountries.length > 0 ? (
-                        <select value={countriesValue} onChange={handleChange}>
-                            {filteredCountries.map((country) => (
-                                <option value={country.name.common} key={country.name.common}>
-                                    {country.name.common}
-                                </option>
-                            ))}
-                        </select>
-                    ) : (
-                            <p>No matching countries found</p>
-                    )}
-                </div>
-
-                <button type="submit">Country Details</button>
+                <Select
+                    options={options}
+                    value={options.find(option => option.value === name)}
+                    onChange={handleChange}
+                    isSearchable
+                />
 
                 {error && <p class="required">{error}</p>}
 
