@@ -10,6 +10,8 @@ export default function Home() {
     const [countriesValue, setCountriesValue] = useState('')
     const [error, setError] = useState('')
 
+    const [filteredCountries, setFilteredCountries] = useState([])
+
     // when application runs, it processes this first
     useEffect(() => {
         // ensures that it only runs once at the beginning
@@ -19,6 +21,16 @@ export default function Home() {
             processing = false
         }
     }, [])
+
+    useEffect(() => {
+        // Set initial filtered countries when component mounts
+        setFilteredCountries(countriesData)
+
+        // Update filtered countries when countriesData changes
+        return () => {
+            setFilteredCountries(countriesData)
+        }
+    }, [countriesData])
 
     // GET request to the backend server for information on all countries
     const countriesFetchData = async (processing) => {
@@ -35,8 +47,10 @@ export default function Home() {
     }
 
     const handleChange = (e) => {
-        setName(e.target.value)
-        setCountriesValue(e.target.value)
+        // capitalizing the first letter inputted
+        const formatValue = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+        setName(formatValue)
+        setCountriesValue(formatValue)
     }
 
     const setSelectedCountryInfo = (countryName) => {
@@ -49,6 +63,18 @@ export default function Home() {
             setSelectData(null)
             setError('Country information not found')
         }
+    }
+
+    const handleInputChange = (e) => {
+        const inputValue = e.target.value.toLowerCase()
+        setName(e.target.value) // Save input value
+
+        // Filter countries based on input
+        const filtered = countriesData.filter((country) =>
+            country.name.common.toLowerCase().includes(inputValue)
+        )
+
+        setFilteredCountries(filtered);// Update filtered countries
     }
 
     const handleSubmit = async (e) => {
@@ -83,12 +109,7 @@ export default function Home() {
     }
 
     const checkIndependents = (independent) => {
-        if (independent === true) {
-            return('Independent')
-        } 
-        else {
-            return('Not independent')
-        }
+        return independent ? 'Independent' : 'Not independent'
     }
 
     // function used when specified data from api has multiple varying outputs
@@ -129,19 +150,22 @@ export default function Home() {
     return (
         <div>
             <form  className="countryForm" onSubmit={handleSubmit}>
-                <label>Please enter your desired country below:</label>
                 {/* saving the inputted variable */}
-                <input type="text" value={name} onChange={handleChange} />
+                <input type="text" value={name} placeholder="Please enter your desired country..." onChange={handleInputChange} />
 
-                <select value={countriesValue} onChange={handleChange}>
-                    {
-                        countriesData?.map((country) => (
-                            <option value={country.name.common} key={country.name.common}>
-                                {country.name.common}
-                            </option>
-                        ))
-                    }
-                </select>
+                <div className="filtered-select">
+                    {filteredCountries.length > 0 ? (
+                        <select value={countriesValue} onChange={handleChange}>
+                            {filteredCountries.map((country) => (
+                                <option value={country.name.common} key={country.name.common}>
+                                    {country.name.common}
+                                </option>
+                            ))}
+                        </select>
+                    ) : (
+                            <p>No matching countries found</p>
+                    )}
+                </div>
 
                 <button type="submit">Country Details</button>
 
